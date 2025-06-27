@@ -24,14 +24,18 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Trading-specific colors */
-  --trading-dark: hsl(226, 22%, 8%);
-  --trading-secondary: hsl(226, 17%, 12%);
-  --trading-accent: hsl(226, 100%, 59%);
-  --trading-success: hsl(142, 72%, 29%);
-  --trading-danger: hsl(0, 84%, 60%);
+  /* MEXC-inspired colors */
+  --trading-dark: hsl(220, 13%, 7%);
+  --trading-secondary: hsl(220, 13%, 10%);
+  --trading-accent: hsl(45, 100%, 55%);
+  --trading-success: hsl(120, 100%, 40%);
+  --trading-danger: hsl(0, 100%, 55%);
   --trading-warning: hsl(43, 96%, 56%);
   --trading-gray: hsl(220, 9%, 64%);
+  --mexc-primary: hsl(45, 100%, 55%);
+  --mexc-bg-primary: hsl(220, 13%, 7%);
+  --mexc-bg-secondary: hsl(220, 13%, 10%);
+  --mexc-border: hsl(220, 13%, 15%);
 }
 
 .dark {
