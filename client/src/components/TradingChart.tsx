@@ -10,24 +10,59 @@ export default function TradingChart({ asset }: TradingChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initialize TradingView widget
+    // Clear previous chart
+    if (chartContainerRef.current) {
+      chartContainerRef.current.innerHTML = '';
+    }
+
+    // Initialize TradingView widget with proper symbol mapping
     if (chartContainerRef.current && window.TradingView) {
+      const symbolMap: Record<string, string> = {
+        "BTC/USD": "BTCUSD",
+        "ETH/USD": "ETHUSD", 
+        "BNB/USD": "BNBUSD",
+        "SOL/USD": "SOLUSD",
+        "ADA/USD": "ADAUSD",
+        "AAPL/USD": "NASDAQ:AAPL",
+        "TSLA/USD": "NASDAQ:TSLA",
+        "EUR/USD": "FX:EURUSD",
+        "GBP/USD": "FX:GBPUSD",
+        "XAU/USD": "TVC:GOLD",
+        "WTI/USD": "NYMEX:CL1!"
+      };
+      
+      const tradingViewSymbol = symbolMap[asset.symbol] || asset.symbol.replace("/", "");
+      
       new window.TradingView.widget({
         width: "100%",
-        height: 400,
-        symbol: asset.symbol.replace("/", ""),
+        height: 300,
+        symbol: tradingViewSymbol,
         interval: "15",
         timezone: "Etc/UTC",
         theme: "dark",
         style: "1",
         locale: "en",
-        toolbar_bg: "#1E2028",
+        toolbar_bg: "#1A1D24",
         enable_publishing: false,
         allow_symbol_change: false,
-        container_id: "tradingview_chart",
-        hide_top_toolbar: true,
-        hide_legend: true,
+        container_id: chartContainerRef.current,
+        hide_top_toolbar: false,
+        hide_legend: false,
         save_image: false,
+        studies: [
+          "Volume@tv-basicstudies",
+          "RSI@tv-basicstudies"
+        ],
+        overrides: {
+          "mainSeriesProperties.candleStyle.upColor": "#22c55e",
+          "mainSeriesProperties.candleStyle.downColor": "#ef4444",
+          "mainSeriesProperties.candleStyle.borderUpColor": "#22c55e",
+          "mainSeriesProperties.candleStyle.borderDownColor": "#ef4444",
+          "mainSeriesProperties.candleStyle.wickUpColor": "#22c55e",
+          "mainSeriesProperties.candleStyle.wickDownColor": "#ef4444",
+          "paneProperties.background": "#1A1D24",
+          "paneProperties.backgroundType": "solid"
+        }
       });
     }
   }, [asset.symbol]);
@@ -56,23 +91,24 @@ export default function TradingChart({ asset }: TradingChartProps) {
         </div>
         
         {/* TradingView Chart */}
-        <div className="h-64 trading-bg-dark rounded-lg relative">
+        <div className="h-80 trading-bg-dark rounded-lg relative overflow-hidden">
           <div 
-            id="tradingview_chart" 
             ref={chartContainerRef}
             className="w-full h-full"
           />
           
           {/* Fallback when TradingView is not available */}
-          <div className="absolute inset-0 flex items-center justify-center trading-border border rounded-lg">
-            <div className="text-center">
-              <i className="fas fa-chart-area text-4xl trading-text-gray mb-3"></i>
-              <p className="trading-text-gray">TradingView Chart</p>
-              <p className="text-sm trading-text-gray mt-1">
-                Chart will load when TradingView widget is available
-              </p>
+          {!window.TradingView && (
+            <div className="absolute inset-0 flex items-center justify-center trading-border border rounded-lg">
+              <div className="text-center">
+                <i className="fas fa-chart-area text-4xl trading-text-gray mb-3"></i>
+                <p className="trading-text-gray">Professional Chart</p>
+                <p className="text-sm trading-text-gray mt-1">
+                  Loading advanced charting tools...
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
