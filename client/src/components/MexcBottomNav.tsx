@@ -7,8 +7,8 @@ export default function MexcBottomNav({ activeTab, onTabChange }: MexcBottomNavP
   const tabs = [
     { id: "trade", label: "Trade", icon: "fa-chart-line" },
     { id: "portfolio", label: "Portfolio", icon: "fa-briefcase" },
-    { id: "stats", label: "Stats", icon: "fa-chart-bar" },
-    { id: "leaderboard", label: "Rankings", icon: "fa-trophy" },
+    { id: "reward", label: "Reward", icon: "fa-gift" },
+    { id: "credit", label: "Credit", icon: "fa-credit-card" },
     { id: "profile", label: "Profile", icon: "fa-user" }
   ];
 
