@@ -275,62 +275,98 @@ export default function PortfolioTab() {
         {/* Rewards Tab */}
         {activeTab === "rewards" && (
           <div className="space-y-4">
+            {/* Epoch Info */}
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <i className="fas fa-chart-bar text-yellow-400 mr-2"></i>
-                Weekly Trading Volume
-              </h3>
-              <div className="text-3xl font-bold text-yellow-400 mb-2">
-                ${weeklyVolume.toLocaleString()}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold flex items-center">
+                  <i className="fas fa-calendar text-blue-400 mr-2"></i>
+                  Epoch 12
+                </h3>
+                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs">Ended</span>
               </div>
-              <div className="text-sm text-gray-400">
-                Current week trading volume
+              <div className="text-sm text-gray-400 mb-2">
+                Max Epoch $ARB distribution
+              </div>
+              <div className="text-2xl font-bold text-blue-400">
+                163,636 $ARB
               </div>
             </div>
 
+            {/* Reward Categories */}
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <i className="fas fa-coins text-green-400 mr-2"></i>
-                Estimated Weekly Reward
-              </h3>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-green-400">
-                    {estimatedReward} $GNS
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Based on current volume
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-400">USD Value</div>
-                  <div className="text-white font-medium">
-                    ~${(estimatedReward * 2.34).toFixed(2)}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <i className="fas fa-gift text-purple-400 mr-2"></i>
-                Claimable Rewards
-              </h3>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="text-2xl font-bold text-purple-400">
-                    {claimableReward} $GNS
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Ready to claim
-                  </div>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold mb-3">Your Est. Rewards</h3>
               
-              <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold py-3 px-4 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 flex items-center justify-center">
-                <i className="fas fa-hand-holding-usd mr-2"></i>
-                Claim Rewards
-              </button>
+              {/* Fees Category */}
+              <div className="mb-4 p-3 bg-gray-800 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium text-yellow-400">Fees</span>
+                  <span className="text-blue-400">2.45 $ARB</span>
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Total Epoch Fees Paid: $285
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Reward Share: 0.0015%
+                </div>
+              </div>
+
+              {/* PnL Category */}
+              <div className="mb-4 p-3 bg-gray-800 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium text-green-400">PnL</span>
+                  <span className="text-blue-400">1.82 $ARB</span>
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Total Epoch PnL: +$450
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Reward Share: 0.0011%
+                </div>
+              </div>
+
+              {/* Loyalty Category */}
+              <div className="mb-4 p-3 bg-gray-800 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium text-purple-400">Loyalty Points</span>
+                  <span className="text-blue-400">0.73 $ARB</span>
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Epoch Points: 124
+                </div>
+                <div className="text-xs text-gray-400">
+                  Your Reward Share: 0.0004%
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="border-t border-gray-700 pt-3">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-white">Total Estimated</span>
+                  <span className="font-bold text-blue-400 text-lg">5.00 $ARB</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Claim Button */}
+            <button 
+              disabled 
+              className="w-full bg-gray-700 text-gray-400 font-bold py-3 px-4 rounded-lg cursor-not-allowed flex items-center justify-center"
+            >
+              <i className="fas fa-clock mr-2"></i>
+              Epoch Ended - Claiming Disabled
+            </button>
+
+            {/* Info */}
+            <div className="text-xs text-gray-400 text-center">
+              Have questions? Ask in{" "}
+              <a href="https://t.me/GainsNetwork" className="text-blue-400 underline">
+                Telegram
+              </a>{" "}
+              or see the{" "}
+              <a href="https://gains-network.gitbook.io/docs-home/gtrade-leveraged-trading/arbitrum-stip-incentives" className="text-blue-400 underline">
+                Rewards
+              </a>{" "}
+              page.
             </div>
           </div>
         )}
@@ -338,56 +374,102 @@ export default function PortfolioTab() {
         {/* Credits Tab */}
         {activeTab === "credits" && (
           <div className="space-y-4">
+            {/* Current Status */}
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <i className="fas fa-credit-card text-blue-400 mr-2"></i>
-                Total Credit Balance
-              </h3>
-              <div className="text-3xl font-bold text-blue-400 mb-2">
-                ${totalCredit.toLocaleString()}
+              <h3 className="text-lg font-semibold mb-3">gTrade Credits</h3>
+              <div className="text-sm text-gray-400 mb-4">
+                Trading discount based on trailing 30d volume, excluding today
               </div>
-              <div className="text-sm text-gray-400">
-                Available for trading positions
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3">Credit Usage</h3>
               
-              <div className="mb-4">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-400">Used</span>
-                  <span className="text-white">{((usedCredit / totalCredit) * 100).toFixed(1)}%</span>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-400">0%</div>
+                  <div className="text-xs text-gray-400">Current Discount</div>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-3">
-                  <div 
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
-                    style={{ width: `${(usedCredit / totalCredit) * 100}%` }}
-                  ></div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-400">0</div>
+                  <div className="text-xs text-gray-400">Total Credits (30d)</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-800 rounded-lg p-3">
-                  <div className="text-gray-400 text-sm">Used Credit</div>
-                  <div className="text-red-400 font-bold text-lg">
-                    ${usedCredit.toLocaleString()}
-                  </div>
+                <div className="bg-gray-800 rounded p-3 text-center">
+                  <div className="text-lg font-bold text-white">0</div>
+                  <div className="text-xs text-gray-400">Outbound Credits</div>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-3">
-                  <div className="text-gray-400 text-sm">Available</div>
-                  <div className="text-green-400 font-bold text-lg">
-                    ${availableCredit.toLocaleString()}
-                  </div>
+                <div className="bg-gray-800 rounded p-3 text-center">
+                  <div className="text-lg font-bold text-white">0</div>
+                  <div className="text-xs text-gray-400">Inbound Credits</div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-900 rounded">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-400">0%</div>
+                  <div className="text-xs text-gray-300">Tomorrow's Discount</div>
                 </div>
               </div>
             </div>
 
+            {/* Tier Table */}
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <button className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:from-green-600 hover:to-blue-600 transition-all duration-200 flex items-center justify-center">
-                <i className="fas fa-shopping-cart mr-2"></i>
-                Buy More Credit
-              </button>
+              <h3 className="text-lg font-semibold mb-3">Discount Tiers</h3>
+              <div className="space-y-2">
+                {[
+                  { tier: 1, credits: "6M", discount: "2.5%" },
+                  { tier: 2, credits: "20M", discount: "5.0%" },
+                  { tier: 3, credits: "50M", discount: "7.5%" },
+                  { tier: 4, credits: "100M", discount: "10.0%" },
+                  { tier: 5, credits: "250M", discount: "13.0%" },
+                  { tier: 6, credits: "400M", discount: "15.0%" },
+                  { tier: 7, credits: "1B", discount: "20.0%" },
+                  { tier: 8, credits: "2B", discount: "25.0%" }
+                ].map((tier) => (
+                  <div key={tier.tier} className="flex justify-between items-center bg-gray-800 rounded px-3 py-2">
+                    <span className="text-yellow-400 font-medium">Tier {tier.tier}</span>
+                    <span className="text-white">{tier.credits}</span>
+                    <span className="text-green-400 font-medium">{tier.discount}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* How to Earn */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <h3 className="text-lg font-semibold mb-3">How to Earn Credits</h3>
+              <div className="text-sm text-gray-400 mb-3">
+                Credits earned per $1 of volume traded (on open and close)
+              </div>
+              <div className="space-y-2">
+                {[
+                  { group: "Crypto", credits: 6 },
+                  { group: "Stocks", credits: 7 },
+                  { group: "Commodities 2", credits: 8 },
+                  { group: "Indices", credits: 5 },
+                  { group: "Commodities 1", credits: 5 },
+                  { group: "Altcoins", credits: 2 },
+                  { group: "FX Exotic", credits: 2 },
+                  { group: "FX Minor", credits: 1.6 },
+                  { group: "FX Major", credits: 1.2 }
+                ].map((item, index) => (
+                  <div key={index} className="flex justify-between items-center bg-gray-800 rounded px-3 py-2">
+                    <span className="text-white">{item.group}</span>
+                    <span className="text-blue-400 font-medium">{item.credits}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Info Links */}
+            <div className="text-xs text-gray-400 text-center">
+              <a href="https://medium.com/@gainsnetwork-io/introducing-gtrade-credits-trade-more-save-more-cb996ed536dc" className="text-blue-400 underline">
+                Learn more here
+              </a>
+              . Still have questions? Ask in{" "}
+              <a href="https://t.me/GainsNetwork" className="text-blue-400 underline">
+                Telegram
+              </a>
+              .
             </div>
           </div>
         )}
