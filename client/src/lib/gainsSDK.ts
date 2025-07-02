@@ -1,20 +1,22 @@
 import { TradingSDK, SupportedChainId } from '@gainsnetwork/trading-sdk';
-import { createPublicClient, createWalletClient, http, custom } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { polygon, arbitrum, base } from 'viem/chains';
-import { parseUnits } from 'viem';
 
-// Chain configurations
+// Chain configurations for Gains Network supported chains
 const CHAIN_CONFIGS = {
   polygon: {
     chain: polygon,
+    chainId: SupportedChainId.Polygon,
     rpcUrl: 'https://polygon-rpc.com',
   },
   arbitrum: {
     chain: arbitrum,
+    chainId: SupportedChainId.Arbitrum,
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
   },
   base: {
     chain: base,
+    chainId: SupportedChainId.Base,
     rpcUrl: 'https://mainnet.base.org',
   },
 };
@@ -22,19 +24,38 @@ const CHAIN_CONFIGS = {
 export class GainsSDKClient {
   private sdk: TradingSDK | null = null;
   private currentChain: keyof typeof CHAIN_CONFIGS = 'arbitrum';
+  private isInitializing: boolean = false;
 
   async initialize(chainName: keyof typeof CHAIN_CONFIGS = 'arbitrum') {
+    if (this.isInitializing) {
+      return this.sdk;
+    }
+    
+    this.isInitializing = true;
     this.currentChain = chainName;
     
     try {
-      // Initialize SDK with supported chain
-      this.sdk = new TradingSDK({
-        chainId: SupportedChainId.ArbitrumSepolia, // Use testnet for now
+      const config = CHAIN_CONFIGS[chainName];
+      
+      // Create public client for the selected chain
+      const publicClient = createPublicClient({
+        chain: config.chain,
+        transport: http(config.rpcUrl),
       });
 
+      // Initialize SDK with the correct mainnet chain
+      this.sdk = new TradingSDK({
+        chainId: config.chainId,
+      });
+
+      console.log(`Initializing Gains SDK on ${chainName} (${config.chainId})...`);
       await this.sdk.initialize();
+      console.log('Gains SDK initialized successfully');
+      
+      this.isInitializing = false;
       return this.sdk;
     } catch (error) {
+      this.isInitializing = false;
       console.error('Failed to initialize Gains SDK:', error);
       throw error;
     }
@@ -42,33 +63,58 @@ export class GainsSDKClient {
 
   async getMarkets() {
     try {
-      if (!this.sdk) await this.initialize();
-      
-      const state = await this.sdk!.getState();
-      const pairs = state.pairs || [];
-      
-      if (pairs.length > 0) {
-        return pairs.map((pair: any, index: number) => ({
-          id: index.toString(),
-          symbol: `${pair.name}/USD`,
-          name: pair.name,
-          category: this.getCategoryFromMarket(pair),
-          price: '50000', // Will be fetched separately
-          change24h: '2.5',
-          volume24h: '1000000',
-          maxLeverage: 150,
-          minPositionSize: '10',
-          spreadP: '0.05',
-          pairIndex: index,
-          isActive: true,
-        }));
+      if (!this.sdk) {
+        await this.initialize();
       }
+      
+      console.log('Fetching real trading pairs from Gains Network SDK...');
+      const state = await this.sdk!.getState();
+      
+      if (!state || !state.pairs) {
+        throw new Error('Unable to fetch trading pairs from SDK');
+      }
+      
+      const pairs = state.pairs;
+      console.log(`Successfully fetched ${pairs.length} trading pairs from Gains Network`);
+      
+      // Transform SDK pairs to our format with proper collateral mapping
+      const transformedPairs = pairs.map((pair: any) => {
+        const category = this.getCategoryFromMarket(pair);
+        const maxLeverage = this.getMaxLeverageForCategory(category);
+        const spreadP = this.getSpreadForCategory(category);
+        const collaterals = this.getCollateralsForChain();
+        
+        return {
+          id: pair.pairIndex,
+          symbol: `${pair.from}/${pair.to}`,
+          name: pair.name || `${pair.from} ${pair.to}`,
+          category,
+          price: pair.price?.toString() || '0.00',
+          change24h: '0.00', // Real-time change will be fetched separately
+          volume24h: '0',
+          maxLeverage,
+          minPositionSize: '10',
+          spreadP,
+          pairIndex: pair.pairIndex,
+          isActive: true,
+          icon: pair.from?.toLowerCase() || 'default',
+          collaterals
+        };
+      });
+      
+      // Sort by category and then by symbol for consistent ordering
+      return transformedPairs.sort((a, b) => {
+        if (a.category !== b.category) {
+          const categoryOrder = ['crypto', 'forex', 'stocks', 'indices', 'commodities'];
+          return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+        }
+        return a.symbol.localeCompare(b.symbol);
+      });
+      
     } catch (error) {
-      console.error('Failed to fetch markets from SDK, using comprehensive fallback data:', error);
+      console.error('Failed to fetch real trading pairs from SDK:', error);
+      throw new Error(`Unable to load trading pairs: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-    
-    // Return comprehensive list with real Gains Network trading pairs and collaterals
-    return this.getRealGainsTradingPairs();
   }
 
   async getMarketPrice(pairIndex: number) {
@@ -229,6 +275,11 @@ export class GainsSDKClient {
       'commodities': '0.01',
     };
     return spreadMap[category] || '0.05';
+  }
+
+  private getCollateralsForChain(): string[] {
+    // Gains Network uses USDC and BtcUSD as collaterals across all supported chains
+    return ['USDC', 'BtcUSD'];
   }
 
   private getRealGainsTradingPairs() {
