@@ -13,7 +13,7 @@ export default function TradingPage() {
   const [selectedCategory, setSelectedCategory] = useState("crypto");
   const [selectedAsset, setSelectedAsset] = useState<TradingPair | null>(null);
   const [activeTab, setActiveTab] = useState("trade");
-  const [viewMode, setViewMode] = useState<"chart" | "orderbook">("chart");
+  const [viewMode, setViewMode] = useState<"orderbook" | "chart">("orderbook");
 
   const { data: tradingPairs = [], isLoading } = useTradingPairs(selectedCategory);
 
@@ -41,14 +41,6 @@ export default function TradingPage() {
           />
           <div className="flex space-x-2">
             <button
-              onClick={() => setViewMode("chart")}
-              className={`px-3 py-1 rounded text-xs ${
-                viewMode === "chart" ? "bg-yellow-500 text-black" : "bg-gray-800 text-gray-400"
-              }`}
-            >
-              Chart
-            </button>
-            <button
               onClick={() => setViewMode("orderbook")}
               className={`px-3 py-1 rounded text-xs ${
                 viewMode === "orderbook" ? "bg-yellow-500 text-black" : "bg-gray-800 text-gray-400"
@@ -56,16 +48,24 @@ export default function TradingPage() {
             >
               Book
             </button>
+            <button
+              onClick={() => setViewMode("chart")}
+              className={`px-3 py-1 rounded text-xs ${
+                viewMode === "chart" ? "bg-yellow-500 text-black" : "bg-gray-800 text-gray-400"
+              }`}
+            >
+              Chart
+            </button>
           </div>
         </div>
 
         {selectedAsset && (
           <>
-            {/* Chart/OrderBook Section */}
-            {viewMode === "chart" ? (
-              <MexcCompactChart asset={selectedAsset} />
-            ) : (
+            {/* OrderBook/Chart Section */}
+            {viewMode === "orderbook" ? (
               <OrderBook asset={selectedAsset} />
+            ) : (
+              <MexcCompactChart asset={selectedAsset} />
             )}
 
             {/* Trading Panel */}
