@@ -148,6 +148,13 @@ This is a modern trading platform application built with React, Express, and Typ
   - Added leverage indicators and category badges for each trading pair
   - Integrated live data structure with proper spreads and leverage limits per category
   - Updated storage layer to handle all trading pair properties (minPositionSize, spreadP, pairIndex)
+- January 2, 2025. Implemented hybrid wallet system:
+  - Restored Connect Wallet button for development outside Warpcast
+  - Added support for MetaMask and WalletConnect via wagmi integration
+  - Automatic Farcaster wallet connection when opened in Warpcast
+  - Manual wallet connection fallback for development environments
+  - Hybrid header shows appropriate wallet connection status based on environment
+  - Profile tab supports both Farcaster and external wallet display
 
 ## User Preferences
 

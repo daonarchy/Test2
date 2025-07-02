@@ -1,7 +1,10 @@
 import { useWallet } from "@/hooks/useWallet";
+import { useAccount } from 'wagmi';
 
 export default function ProfileTab() {
-  const { isConnected, address, chainName, user, isInFarcaster } = useWallet();
+  const { isConnected, address, user, isInFarcaster, disconnect } = useWallet();
+  const { chain } = useAccount();
+  const chainName = chain?.name || 'Base';
 
   const handleSwitchNetwork = () => {
     // Dummy function for switching network
@@ -9,8 +12,7 @@ export default function ProfileTab() {
   };
 
   const handleDisconnect = () => {
-    // Dummy function for disconnecting wallet
-    alert("Wallet disconnected... This is a placeholder function.");
+    disconnect();
   };
 
   const shortenAddress = (addr: string) => {
@@ -27,23 +29,7 @@ export default function ProfileTab() {
     return icons[networkName] || "🔗";
   };
 
-  if (!isInFarcaster) {
-    return (
-      <div className="bg-black text-white p-4 pb-20">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-xl font-bold mb-4">Profile</h2>
-          
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
-            <div className="mb-4">
-              <div className="text-4xl mb-3">🦄</div>
-              <h3 className="text-lg font-semibold text-gray-300">Farcaster Required</h3>
-              <p className="text-gray-400 text-sm">Please open this app in Warpcast to access your profile</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Remove Farcaster-only restriction
 
   if (!isConnected || !address) {
     return (
@@ -54,8 +40,10 @@ export default function ProfileTab() {
           <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
             <div className="mb-4">
               <i className="fas fa-wallet text-gray-400 text-4xl mb-3"></i>
-              <h3 className="text-lg font-semibold text-gray-300">Wallet Loading</h3>
-              <p className="text-gray-400 text-sm">Connecting to your Farcaster wallet...</p>
+              <h3 className="text-lg font-semibold text-gray-300">No Wallet Connected</h3>
+              <p className="text-gray-400 text-sm">
+                {isInFarcaster ? "Connecting to your Farcaster wallet..." : "Connect a wallet to access your profile"}
+              </p>
             </div>
           </div>
         </div>
