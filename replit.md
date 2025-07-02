@@ -155,6 +155,15 @@ This is a modern trading platform application built with React, Express, and Typ
   - Manual wallet connection fallback for development environments
   - Hybrid header shows appropriate wallet connection status based on environment
   - Profile tab supports both Farcaster and external wallet display
+- January 2, 2025. Complete trading pairs and collateral system overhaul:
+  - Updated to use authentic Gains Network collateral system (USDC and BtcUSD only)
+  - Removed incorrect DAI/WETH collateral references from previous implementation
+  - Implemented comprehensive 60+ trading pairs directly from Gains Network data structure
+  - Added real pair indices, leverage ratios, and spreads matching live platform
+  - Updated API endpoints to serve authentic Gains Network data instead of storage-based mock data
+  - Enhanced collateral selector to dynamically show available collaterals per trading pair
+  - All categories (Crypto, Forex, Stocks, Indices, Commodities) now use correct USDC/BtcUSD collaterals
+  - Trading interface now matches authentic Gains Network trading experience
 
 ## User Preferences
 

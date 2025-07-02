@@ -18,7 +18,10 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const [positionSize, setPositionSize] = useState("");
   const [leverage, setLeverage] = useState(10);
   const [limitPrice, setLimitPrice] = useState("");
-  const [selectedCollateral, setSelectedCollateral] = useState("DAI");
+  const [selectedCollateral, setSelectedCollateral] = useState("USDC");
+  
+  // Get available collaterals for this asset (default to USDC, BtcUSD)
+  const availableCollaterals = (asset as any)?.collaterals || ['USDC', 'BtcUSD'];
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
