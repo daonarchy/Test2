@@ -140,6 +140,14 @@ This is a modern trading platform application built with React, Express, and Typ
     - Shows "Please open in Warpcast" message when accessed outside Farcaster clients
     - Profile tab displays Farcaster user info (username, display name, FID, profile picture)
     - Header shows connection status and Farcaster username instead of connect button
+- January 2, 2025. Enhanced trading pairs and asset selector:
+  - Implemented comprehensive trading pairs database with 35+ assets from Gains Network
+  - Added dynamic category filtering (Crypto, Forex, Stocks, Indices, Commodities)
+  - Enhanced search functionality to filter by symbol or asset name
+  - Updated asset selector with category tabs and advanced filtering
+  - Added leverage indicators and category badges for each trading pair
+  - Integrated live data structure with proper spreads and leverage limits per category
+  - Updated storage layer to handle all trading pair properties (minPositionSize, spreadP, pairIndex)
 
 ## User Preferences
 

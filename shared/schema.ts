@@ -19,6 +19,9 @@ export const tradingPairs = pgTable("trading_pairs", {
   change24h: decimal("change_24h", { precision: 10, scale: 4 }).notNull(),
   volume24h: decimal("volume_24h", { precision: 18, scale: 2 }).notNull(),
   maxLeverage: integer("max_leverage").notNull(),
+  minPositionSize: decimal("min_position_size", { precision: 18, scale: 8 }).notNull().default('10'),
+  spreadP: decimal("spread_p", { precision: 5, scale: 3 }).notNull().default('0.05'),
+  pairIndex: integer("pair_index"),
   isActive: boolean("is_active").default(true),
   icon: text("icon"), // CSS class or icon identifier
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -72,6 +75,10 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const insertTradingPairSchema = createInsertSchema(tradingPairs).omit({
   id: true,
   updatedAt: true,
+}).extend({
+  minPositionSize: z.string().optional(),
+  spreadP: z.string().optional(),
+  pairIndex: z.number().optional(),
 });
 
 export const insertOrderSchema = createInsertSchema(orders).omit({
