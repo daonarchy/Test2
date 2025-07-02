@@ -120,13 +120,14 @@ This is a modern trading platform application built with React, Express, and Typ
   - Added compact chart visualization with canvas-based price movements
   - Built position and order tracking components
   - Added asset selector with search functionality
-  - Updated bottom navigation to match Gains Network platform features (Trade, Portfolio, Reward, Credit, Profile)
+  - Updated bottom navigation to match Gains Network platform features (Trade, Portfolio, Leaderboard, Analytics, Profile)
   - Implemented quick leverage selection (5x-100x)
   - Added real-time trading calculations (margin, position size, liquidation price)
   - Enhanced bottom navigation with full tab functionality:
-    - Portfolio: positions and orders management with compact list view
-    - Reward: weekly trading volume rewards and $GNS token claiming system
-    - Credit: trading credit balance with usage tracking and purchase options
+    - Portfolio: positions and orders management with Dashboard/Rewards/Credits sub-tabs
+    - Rewards: Gold Rush on Base program with $BtcUSD rewards (33,000+ every 2 weeks)
+    - Credits: gTrade Credits discount system with 8-tier structure (up to 25% discount)
+    - Analytics: comprehensive trading statistics and performance metrics
     - Profile: wallet connection, network switching, and trading statistics
 
 ## User Preferences

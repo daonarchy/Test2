@@ -275,20 +275,25 @@ export default function PortfolioTab() {
         {/* Rewards Tab */}
         {activeTab === "rewards" && (
           <div className="space-y-4">
-            {/* Epoch Info */}
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold flex items-center">
-                  <i className="fas fa-calendar text-blue-400 mr-2"></i>
-                  Epoch 12
+            {/* Gold Rush Program */}
+            <div className="bg-gradient-to-r from-yellow-900 to-orange-900 border border-yellow-600 rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <span className="text-2xl mr-2">⛏️</span>
+                <h3 className="text-lg font-semibold text-yellow-400">
+                  Welcome to the Gold Rush on Base
                 </h3>
-                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs">Ended</span>
               </div>
-              <div className="text-sm text-gray-400 mb-2">
-                Max Epoch $ARB distribution
+              <div className="text-sm text-gray-200 mb-3">
+                Dive into our 12-week trading incentive program, now live!
               </div>
-              <div className="text-2xl font-bold text-blue-400">
-                163,636 $ARB
+              <div className="text-sm text-gray-200 mb-2">
+                Trade on Base and earn a share of up to
+              </div>
+              <div className="text-2xl font-bold text-yellow-400 mb-2">
+                33,000+ $BtcUSD every 2 weeks
+              </div>
+              <div className="text-xs text-gray-300">
+                Your share is based on three categories: Fees, PnL, Loyalty
               </div>
             </div>
 
@@ -300,13 +305,13 @@ export default function PortfolioTab() {
               <div className="mb-4 p-3 bg-gray-800 rounded">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-yellow-400">Fees</span>
-                  <span className="text-blue-400">2.45 $ARB</span>
+                  <span className="text-yellow-400">8.45 $BtcUSD</span>
                 </div>
                 <div className="text-xs text-gray-400">
-                  Your Total Epoch Fees Paid: $285
+                  The more fees you pay, the higher your reward. Your share is determined by your total fees paid against all protocol fees for the epoch.
                 </div>
-                <div className="text-xs text-gray-400">
-                  Your Reward Share: 0.0015%
+                <div className="text-xs text-gray-400 mt-1">
+                  * Rewards for this category are capped at 100% total protocol fees
                 </div>
               </div>
 
@@ -314,27 +319,21 @@ export default function PortfolioTab() {
               <div className="mb-4 p-3 bg-gray-800 rounded">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium text-green-400">PnL</span>
-                  <span className="text-blue-400">1.82 $ARB</span>
+                  <span className="text-yellow-400">4.82 $BtcUSD</span>
                 </div>
                 <div className="text-xs text-gray-400">
-                  Your Total Epoch PnL: +$450
-                </div>
-                <div className="text-xs text-gray-400">
-                  Your Reward Share: 0.0011%
+                  Your share is determined by your total PnL against all protocol positive PnL for the epoch.
                 </div>
               </div>
 
               {/* Loyalty Category */}
               <div className="mb-4 p-3 bg-gray-800 rounded">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-purple-400">Loyalty Points</span>
-                  <span className="text-blue-400">0.73 $ARB</span>
+                  <span className="font-medium text-purple-400">Loyalty</span>
+                  <span className="text-yellow-400">1.23 $BtcUSD</span>
                 </div>
                 <div className="text-xs text-gray-400">
-                  Your Epoch Points: 124
-                </div>
-                <div className="text-xs text-gray-400">
-                  Your Reward Share: 0.0004%
+                  Your share is determined by your total loyalty points against all protocol loyalty points for the epoch.
                 </div>
               </div>
 
@@ -342,18 +341,29 @@ export default function PortfolioTab() {
               <div className="border-t border-gray-700 pt-3">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-white">Total Estimated</span>
-                  <span className="font-bold text-blue-400 text-lg">5.00 $ARB</span>
+                  <span className="font-bold text-yellow-400 text-lg">14.50 $BtcUSD</span>
                 </div>
               </div>
             </div>
 
+            {/* Reward Distribution Info */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <h3 className="text-lg font-semibold mb-3 flex items-center">
+                <i className="fas fa-info-circle text-blue-400 mr-2"></i>
+                Reward Distribution
+              </h3>
+              <div className="text-sm text-gray-400 mb-2">
+                Up to 6,666 🪙
+              </div>
+              <div className="text-xs text-gray-400">
+                Rewards are calculated biweekly and will be made available for claim every 2nd Friday. For transparency, our reward system is fully auditable through on-chain metrics.
+              </div>
+            </div>
+
             {/* Claim Button */}
-            <button 
-              disabled 
-              className="w-full bg-gray-700 text-gray-400 font-bold py-3 px-4 rounded-lg cursor-not-allowed flex items-center justify-center"
-            >
-              <i className="fas fa-clock mr-2"></i>
-              Epoch Ended - Claiming Disabled
+            <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold py-3 px-4 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 flex items-center justify-center">
+              <i className="fas fa-coins mr-2"></i>
+              Start Trading
             </button>
 
             {/* Info */}
