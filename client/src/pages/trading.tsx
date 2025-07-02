@@ -7,8 +7,8 @@ import MexcPositionList from "@/components/MexcPositionList";
 import MexcAssetSelector from "@/components/MexcAssetSelector";
 import OrderBook from "@/components/OrderBook";
 import PortfolioTab from "@/components/PortfolioTab";
-import RewardTab from "@/components/RewardTab";
-import CreditTab from "@/components/CreditTab";
+import LeaderboardTab from "@/components/LeaderboardTab";
+import AnalyticsTab from "@/components/AnalyticsTab";
 import ProfileTab from "@/components/ProfileTab";
 import { useTradingPairs } from "@/hooks/useTradingPairs";
 import type { TradingPair } from "@shared/schema";
@@ -87,10 +87,10 @@ export default function TradingPage() {
         );
       case "portfolio":
         return <PortfolioTab />;
-      case "reward":
-        return <RewardTab />;
-      case "credit":
-        return <CreditTab />;
+      case "leaderboard":
+        return <LeaderboardTab />;
+      case "analytics":
+        return <AnalyticsTab />;
       case "profile":
         return <ProfileTab />;
       default:
