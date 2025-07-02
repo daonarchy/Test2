@@ -120,7 +120,7 @@ This is a modern trading platform application built with React, Express, and Typ
   - Added compact chart visualization with canvas-based price movements
   - Built position and order tracking components
   - Added asset selector with search functionality
-  - Updated bottom navigation to match Gains Network menu structure (Futures, Reward, Markets, Orders, Assets)
+  - Updated bottom navigation to match Gains Network platform features (Trade, Portfolio, Stats, Rankings, Profile)
   - Implemented quick leverage selection (5x-100x)
   - Added real-time trading calculations (margin, position size, liquidation price)
 

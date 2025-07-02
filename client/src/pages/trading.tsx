@@ -12,7 +12,7 @@ import type { TradingPair } from "@shared/schema";
 export default function TradingPage() {
   const [selectedCategory, setSelectedCategory] = useState("crypto");
   const [selectedAsset, setSelectedAsset] = useState<TradingPair | null>(null);
-  const [activeTab, setActiveTab] = useState("futures");
+  const [activeTab, setActiveTab] = useState("trade");
   const [viewMode, setViewMode] = useState<"chart" | "orderbook">("chart");
 
   const { data: tradingPairs = [], isLoading } = useTradingPairs(selectedCategory);

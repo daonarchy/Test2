@@ -5,11 +5,11 @@ interface MexcBottomNavProps {
 
 export default function MexcBottomNav({ activeTab, onTabChange }: MexcBottomNavProps) {
   const tabs = [
-    { id: "futures", label: "Futures", icon: "fa-chart-line" },
-    { id: "reward", label: "Reward", icon: "fa-gift" },
-    { id: "markets", label: "Markets", icon: "fa-list" },
-    { id: "orders", label: "Orders", icon: "fa-clipboard-list" },
-    { id: "assets", label: "Assets", icon: "fa-wallet" }
+    { id: "trade", label: "Trade", icon: "fa-chart-line" },
+    { id: "portfolio", label: "Portfolio", icon: "fa-briefcase" },
+    { id: "stats", label: "Stats", icon: "fa-chart-bar" },
+    { id: "leaderboard", label: "Rankings", icon: "fa-trophy" },
+    { id: "profile", label: "Profile", icon: "fa-user" }
   ];
 
   return (
