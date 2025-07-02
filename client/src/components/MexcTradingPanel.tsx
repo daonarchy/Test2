@@ -18,6 +18,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const [positionSize, setPositionSize] = useState("");
   const [leverage, setLeverage] = useState(10);
   const [limitPrice, setLimitPrice] = useState("");
+  const [selectedCollateral, setSelectedCollateral] = useState("DAI");
 
   const { toast } = useToast();
   const queryClient = useQueryClient();

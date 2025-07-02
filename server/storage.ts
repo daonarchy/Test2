@@ -55,8 +55,8 @@ export class MemStorage implements IStorage {
 
   private async initializeTradingPairs() {
     const initialPairs: InsertTradingPair[] = [
-      // Major Cryptocurrencies
-      { symbol: 'BTC/USD', name: 'Bitcoin', category: 'crypto', price: '97524.50', change24h: '2.34', volume24h: '28590000000', maxLeverage: 150, icon: 'btc' },
+      // Comprehensive Gains Network pairs with collateral support
+      { symbol: 'BTC/USD', name: 'Bitcoin', category: 'crypto', price: '97524.50', change24h: '2.34', volume24h: '28590000000', maxLeverage: 150, icon: 'btc', collaterals: 'DAI,USDC,WETH', pairIndex: 0 },
       { symbol: 'ETH/USD', name: 'Ethereum', category: 'crypto', price: '3423.80', change24h: '1.87', volume24h: '15430000000', maxLeverage: 150, icon: 'eth' },
       { symbol: 'LINK/USD', name: 'Chainlink', category: 'crypto', price: '24.56', change24h: '3.21', volume24h: '850000000', maxLeverage: 150, icon: 'link' },
       { symbol: 'DOGE/USD', name: 'Dogecoin', category: 'crypto', price: '0.3654', change24h: '5.67', volume24h: '2100000000', maxLeverage: 150, icon: 'doge' },
