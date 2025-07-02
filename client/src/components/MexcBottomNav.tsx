@@ -6,7 +6,7 @@ interface MexcBottomNavProps {
 export default function MexcBottomNav({ activeTab, onTabChange }: MexcBottomNavProps) {
   const tabs = [
     { id: "futures", label: "Futures", icon: "fa-chart-line" },
-    { id: "spot", label: "Spot", icon: "fa-exchange-alt" },
+    { id: "reward", label: "Reward", icon: "fa-gift" },
     { id: "markets", label: "Markets", icon: "fa-list" },
     { id: "orders", label: "Orders", icon: "fa-clipboard-list" },
     { id: "assets", label: "Assets", icon: "fa-wallet" }
