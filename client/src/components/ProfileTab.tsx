@@ -1,7 +1,7 @@
 import { useWallet } from "@/hooks/useWallet";
 
 export default function ProfileTab() {
-  const { isConnected, address, chainName } = useWallet();
+  const { isConnected, address, chainName, user, isInFarcaster } = useWallet();
 
   const handleSwitchNetwork = () => {
     // Dummy function for switching network
@@ -27,6 +27,24 @@ export default function ProfileTab() {
     return icons[networkName] || "🔗";
   };
 
+  if (!isInFarcaster) {
+    return (
+      <div className="bg-black text-white p-4 pb-20">
+        <div className="max-w-md mx-auto">
+          <h2 className="text-xl font-bold mb-4">Profile</h2>
+          
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
+            <div className="mb-4">
+              <div className="text-4xl mb-3">🦄</div>
+              <h3 className="text-lg font-semibold text-gray-300">Farcaster Required</h3>
+              <p className="text-gray-400 text-sm">Please open this app in Warpcast to access your profile</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isConnected || !address) {
     return (
       <div className="bg-black text-white p-4 pb-20">
@@ -36,13 +54,9 @@ export default function ProfileTab() {
           <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
             <div className="mb-4">
               <i className="fas fa-wallet text-gray-400 text-4xl mb-3"></i>
-              <h3 className="text-lg font-semibold text-gray-300">Wallet Not Connected</h3>
-              <p className="text-gray-400 text-sm">Connect your wallet to access profile features</p>
+              <h3 className="text-lg font-semibold text-gray-300">Wallet Loading</h3>
+              <p className="text-gray-400 text-sm">Connecting to your Farcaster wallet...</p>
             </div>
-            
-            <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold py-3 px-4 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200">
-              Connect Wallet
-            </button>
           </div>
         </div>
       </div>
@@ -54,17 +68,50 @@ export default function ProfileTab() {
       <div className="max-w-md mx-auto">
         <h2 className="text-xl font-bold mb-4">Profile</h2>
         
+        {/* Farcaster Profile */}
+        {user && (
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-4">
+            <h3 className="text-lg font-semibold mb-3 flex items-center">
+              <span className="text-purple-400 mr-2">🦄</span>
+              Farcaster Profile
+            </h3>
+            
+            <div className="bg-gray-800 rounded-lg p-3 mb-3">
+              <div className="flex items-center space-x-3">
+                {user.pfpUrl && (
+                  <img 
+                    src={user.pfpUrl} 
+                    alt="Profile" 
+                    className="w-12 h-12 rounded-full border border-gray-600"
+                  />
+                )}
+                <div>
+                  <div className="text-white font-semibold">
+                    {user.displayName || user.username || 'Farcaster User'}
+                  </div>
+                  {user.username && (
+                    <div className="text-purple-400 text-sm">@{user.username}</div>
+                  )}
+                  {user.fid && (
+                    <div className="text-gray-400 text-xs">FID: {user.fid}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Wallet Information */}
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-4">
           <h3 className="text-lg font-semibold mb-3 flex items-center">
             <i className="fas fa-wallet text-green-400 mr-2"></i>
-            Connected Wallet
+            Embedded Wallet
           </h3>
           
           <div className="bg-gray-800 rounded-lg p-3 mb-3">
             <div className="text-gray-400 text-sm mb-1">Wallet Address</div>
             <div className="flex items-center justify-between">
-              <div className="text-white font-mono text-lg">
+              <div className="text-white font-mono text-sm">
                 {shortenAddress(address)}
               </div>
               <button 
@@ -74,6 +121,9 @@ export default function ProfileTab() {
               >
                 <i className="fas fa-copy"></i>
               </button>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Automatically connected via Farcaster
             </div>
           </div>
 
@@ -120,20 +170,33 @@ export default function ProfileTab() {
           </div>
         </div>
 
-        {/* Account Actions */}
+        {/* App Info */}
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-4">
           <h3 className="text-lg font-semibold mb-3 flex items-center">
-            <i className="fas fa-cog text-gray-400 mr-2"></i>
-            Account Settings
+            <i className="fas fa-info-circle text-blue-400 mr-2"></i>
+            App Information
           </h3>
           
-          <button
-            onClick={handleDisconnect}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
-          >
-            <i className="fas fa-sign-out-alt mr-2"></i>
-            Disconnect Wallet
-          </button>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Version:</span>
+              <span className="text-white">1.0.0</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Platform:</span>
+              <span className="text-white">Farcaster Mini App</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Network:</span>
+              <span className="text-white">Base Chain</span>
+            </div>
+          </div>
+
+          <div className="mt-3 p-3 bg-blue-900 rounded-lg">
+            <div className="text-xs text-blue-200">
+              Wallet automatically connected via Farcaster. No manual connection/disconnection required.
+            </div>
+          </div>
         </div>
 
         {/* Trading Stats */}

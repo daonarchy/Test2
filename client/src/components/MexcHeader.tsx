@@ -7,7 +7,7 @@ interface MexcHeaderProps {
 }
 
 export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
-  const { isConnected, address, connect } = useWallet();
+  const { isConnected, address, isInFarcaster, user, isLoading } = useWallet();
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-gray-900 border-b border-gray-700 z-50">
@@ -19,18 +19,27 @@ export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1 text-xs">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-gray-400">Polygon</span>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+            <span className="text-gray-400">Base</span>
           </div>
-          <button
-            onClick={connect}
-            className="bg-yellow-500 text-black px-3 py-1 rounded text-xs font-medium"
-          >
-            {isConnected 
-              ? `${address?.slice(0, 4)}...${address?.slice(-4)}`
-              : "Connect"
-            }
-          </button>
+          
+          {isLoading ? (
+            <div className="bg-gray-600 text-gray-300 px-3 py-1 rounded text-xs">
+              Loading...
+            </div>
+          ) : !isInFarcaster ? (
+            <div className="bg-red-600 text-white px-3 py-1 rounded text-xs">
+              Farcaster Only
+            </div>
+          ) : isConnected ? (
+            <div className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
+              {user?.username || `${address?.slice(0, 4)}...${address?.slice(-4)}`}
+            </div>
+          ) : (
+            <div className="bg-yellow-600 text-black px-3 py-1 rounded text-xs">
+              No Wallet
+            </div>
+          )}
         </div>
       </div>
 

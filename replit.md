@@ -134,6 +134,12 @@ This is a modern trading platform application built with React, Express, and Typ
   - Implemented hybrid data layer: real Gains SDK calls with mock data fallback
   - Updated rewards structure to match live Gold Rush on Base program
   - Trading panel now attempts real position opening via Gains Network contracts
+  - Converted to Farcaster Mini App with automatic wallet integration:
+    - Removed manual "Connect Wallet" buttons - wallet connects automatically via Farcaster
+    - Added Farcaster environment detection and user profile integration
+    - Shows "Please open in Warpcast" message when accessed outside Farcaster clients
+    - Profile tab displays Farcaster user info (username, display name, FID, profile picture)
+    - Header shows connection status and Farcaster username instead of connect button
 
 ## User Preferences
 
