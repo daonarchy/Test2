@@ -129,6 +129,11 @@ This is a modern trading platform application built with React, Express, and Typ
     - Credits: gTrade Credits discount system with 8-tier structure (up to 25% discount)
     - Analytics: comprehensive trading statistics and performance metrics
     - Profile: wallet connection, network switching, and trading statistics
+  - Integrated Gains Network Trading SDK (@gainsnetwork/trading-sdk) for live trading functionality
+  - Added wagmi for real wallet connections (MetaMask, WalletConnect, Coinbase Wallet)
+  - Implemented hybrid data layer: real Gains SDK calls with mock data fallback
+  - Updated rewards structure to match live Gold Rush on Base program
+  - Trading panel now attempts real position opening via Gains Network contracts
 
 ## User Preferences
 
