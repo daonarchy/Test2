@@ -173,9 +173,10 @@ This is a modern trading platform application built with React, Express, and Typ
   - Added chain switching functionality in header with real-time updates
   - Collateral dropdown now updates dynamically based on current chain selection
   - Trading pairs refresh automatically when chain changes via SDK.switchChain()
-  - Implemented proper error handling, 30-second caching, and retry logic
+  - Implemented proper error handling, 5-minute caching for pairs and 10-minute caching for collaterals
   - Real trading functionality with openTrade method using authentic pair indices and collateral indices
   - Complete removal of hardcoded data - all components now use live SDK sources
+  - Simplified collateral system to only show USDC and BtcUSD as per authentic Gains Network specification
 
 ## User Preferences
 

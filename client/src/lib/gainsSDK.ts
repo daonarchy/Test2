@@ -375,35 +375,11 @@ export class GainsSDKClient {
   }
 
   private getCollateralsForChain() {
-    // Gains Network collaterals by chain
-    const baseCollaterals = [
+    // Gains Network hanya menggunakan USDC dan BtcUSD sebagai collateral
+    return [
       { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
       { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
     ];
-
-    // Add chain-specific collaterals
-    switch (this.currentChain) {
-      case 'polygon':
-        return [
-          ...baseCollaterals,
-          { index: 0, symbol: 'DAI', name: 'Dai Stablecoin', decimals: 18, address: '', isActive: true },
-          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true }
-        ];
-      case 'arbitrum':
-        return [
-          ...baseCollaterals,
-          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true },
-          { index: 2, symbol: 'ARB', name: 'Arbitrum Token', decimals: 18, address: '', isActive: true }
-        ];
-      case 'base':
-        return [
-          ...baseCollaterals,
-          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true },
-          { index: 4, symbol: 'CBETH', name: 'Coinbase Wrapped Staked ETH', decimals: 18, address: '', isActive: true }
-        ];
-      default:
-        return baseCollaterals;
-    }
   }
 
   private getIconForSymbol(symbol: string): string {
