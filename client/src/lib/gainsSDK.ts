@@ -30,6 +30,10 @@ export class GainsSDKClient {
   private lastInitTime: number = 0;
   private cachedMarkets: any[] = [];
   private lastFetchTime: number = 0;
+  private cachedCollaterals: any[] = [];
+  private lastCollateralsFetchTime: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+  private readonly COLLATERAL_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
 
   async initialize(chainName: keyof typeof CHAIN_CONFIGS = 'arbitrum') {
     if (this.isInitializing) {
@@ -71,8 +75,8 @@ export class GainsSDKClient {
         throw new Error('SDK not initialized');
       }
 
-      // Return cached data if fresh (less than 30 seconds old)
-      if (this.cachedMarkets.length > 0 && Date.now() - this.lastFetchTime < 30000) {
+      // Return cached data if fresh (less than 5 minutes old)
+      if (this.cachedMarkets.length > 0 && Date.now() - this.lastFetchTime < this.CACHE_DURATION) {
         console.log(`Using cached trading pairs (${this.cachedMarkets.length} pairs)`);
         return this.cachedMarkets;
       }
@@ -252,13 +256,20 @@ export class GainsSDKClient {
 
   async getCollaterals() {
     try {
+      // Return cached collaterals if still fresh (10 minutes)
+      const now = Date.now();
+      if (this.cachedCollaterals.length > 0 && (now - this.lastCollateralsFetchTime) < this.COLLATERAL_CACHE_DURATION) {
+        console.log('Using cached collaterals');
+        return this.cachedCollaterals;
+      }
+
       if (!this.sdk) await this.initialize();
       
       const state = await this.sdk!.getState();
       
       // Get collaterals from SDK state
       if (state?.collaterals && Array.isArray(state.collaterals)) {
-        return state.collaterals.map((collateral: any, index: number) => ({
+        const collaterals = state.collaterals.map((collateral: any, index: number) => ({
           index: index,
           symbol: collateral.symbol || `COL_${index}`,
           name: collateral.name || collateral.symbol || `Collateral ${index}`,
@@ -266,19 +277,24 @@ export class GainsSDKClient {
           address: collateral.address || '',
           isActive: true
         }));
+        
+        // Cache the results
+        this.cachedCollaterals = collaterals;
+        this.lastCollateralsFetchTime = Date.now();
+        return collaterals;
       }
       
-      // Fallback to known Gains Network collaterals
-      return [
-        { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
-        { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
-      ];
+      // Fallback to known Gains Network collaterals based on chain
+      const chainCollaterals = this.getCollateralsForChain();
+      this.cachedCollaterals = chainCollaterals;
+      this.lastCollateralsFetchTime = Date.now();
+      return chainCollaterals;
     } catch (error) {
       console.error('Failed to fetch collaterals:', error);
-      return [
-        { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
-        { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
-      ];
+      const fallbackCollaterals = this.getCollateralsForChain();
+      this.cachedCollaterals = fallbackCollaterals;
+      this.lastCollateralsFetchTime = Date.now();
+      return fallbackCollaterals;
     }
   }
 
@@ -358,9 +374,36 @@ export class GainsSDKClient {
     }
   }
 
-  private getCollateralsForChain(): string[] {
-    // Gains Network uses USDC and BtcUSD as collaterals
-    return ['USDC', 'BtcUSD'];
+  private getCollateralsForChain() {
+    // Gains Network collaterals by chain
+    const baseCollaterals = [
+      { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
+      { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
+    ];
+
+    // Add chain-specific collaterals
+    switch (this.currentChain) {
+      case 'polygon':
+        return [
+          ...baseCollaterals,
+          { index: 0, symbol: 'DAI', name: 'Dai Stablecoin', decimals: 18, address: '', isActive: true },
+          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true }
+        ];
+      case 'arbitrum':
+        return [
+          ...baseCollaterals,
+          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true },
+          { index: 2, symbol: 'ARB', name: 'Arbitrum Token', decimals: 18, address: '', isActive: true }
+        ];
+      case 'base':
+        return [
+          ...baseCollaterals,
+          { index: 1, symbol: 'WETH', name: 'Wrapped Ethereum', decimals: 18, address: '', isActive: true },
+          { index: 4, symbol: 'CBETH', name: 'Coinbase Wrapped Staked ETH', decimals: 18, address: '', isActive: true }
+        ];
+      default:
+        return baseCollaterals;
+    }
   }
 
   private getIconForSymbol(symbol: string): string {
