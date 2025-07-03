@@ -3,7 +3,7 @@ import type { TradingPair } from "@shared/schema";
 import { gainsSDK } from "@/lib/gainsSDK";
 
 export function useTradingPairs(category?: string) {
-  return useQuery<TradingPair[]>({
+  return useQuery<any[]>({
     queryKey: ["gains-network-pairs", category],
     queryFn: async () => {
       try {
