@@ -9,7 +9,16 @@ interface MexcHeaderProps {
 }
 
 export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
-  const { isConnected: isWagmiConnected, address: wagmiAddress, connect, disconnect } = useWallet();
+  const { 
+    isConnected: isWagmiConnected, 
+    address: wagmiAddress, 
+    connect, 
+    disconnect,
+    currentChain,
+    switchChain,
+    isSwitchingChain,
+    getChainInfo
+  } = useWallet();
   const { isInFarcaster, user, address: farcasterAddress } = useFarcasterWallet();
 
   const handleConnect = async () => {
@@ -34,9 +43,19 @@ export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
           <div className="text-gray-400">Futures</div>
         </div>
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1 text-xs">
+          {/* Chain Selector */}
+          <div className="flex items-center space-x-1">
+            <select
+              value={currentChain}
+              onChange={(e) => switchChain(e.target.value as 'polygon' | 'arbitrum' | 'base')}
+              disabled={isSwitchingChain}
+              className="bg-gray-800 border border-gray-600 text-white text-xs px-2 py-1 rounded focus:outline-none focus:border-yellow-500"
+            >
+              <option value="arbitrum">Arbitrum</option>
+              <option value="polygon">Polygon</option>
+              <option value="base">Base</option>
+            </select>
             <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-            <span className="text-gray-400">Base</span>
           </div>
           
           {isConnectedViaFarcaster ? (
