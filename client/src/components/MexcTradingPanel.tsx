@@ -55,7 +55,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
 
         const result = await gainsSDK.openPosition({
           user: address,
-          pairIndex: asset.pairIndex || parseInt(asset.id),
+          pairIndex: asset.pairIndex || parseInt(asset.id.toString()),
           collateralAmount: positionSize,
           collateralIndex,
           leverage,
@@ -82,7 +82,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
     onSuccess: async (result) => {
       toast({
         title: "Position Opened",
-        description: `${direction.toUpperCase()} ${asset.symbol} - ${result.transactionHash ? 'TX: ' + result.transactionHash.slice(0, 8) + '...' : 'Demo Mode'}`,
+        description: `${direction.toUpperCase()} ${asset.symbol} - ${result.success ? 'Transaction Built' : 'Demo Mode'}`,
       });
       
       queryClient.invalidateQueries({ queryKey: ["gains-positions", address] });

@@ -87,7 +87,7 @@ export default function LeaderboardTab() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-white font-medium">{trader.volume}</div>
+                    <div className="text-white font-medium">{trader.trades} trades</div>
                     <div className="text-yellow-400 text-sm">{trader.pnl}</div>
                   </div>
                 </div>
