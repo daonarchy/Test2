@@ -244,6 +244,38 @@ export class GainsSDKClient {
     }
   }
 
+  async getCollaterals() {
+    try {
+      if (!this.sdk) await this.initialize();
+      
+      const state = await this.sdk!.getState();
+      
+      // Get collaterals from SDK state
+      if (state?.collaterals && Array.isArray(state.collaterals)) {
+        return state.collaterals.map((collateral: any, index: number) => ({
+          index: index,
+          symbol: collateral.symbol || `COL_${index}`,
+          name: collateral.name || collateral.symbol || `Collateral ${index}`,
+          decimals: collateral.decimals || 6,
+          address: collateral.address || '',
+          isActive: true
+        }));
+      }
+      
+      // Fallback to known Gains Network collaterals
+      return [
+        { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
+        { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
+      ];
+    } catch (error) {
+      console.error('Failed to fetch collaterals:', error);
+      return [
+        { index: 3, symbol: 'USDC', name: 'USD Coin', decimals: 6, address: '', isActive: true },
+        { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD', decimals: 18, address: '', isActive: true }
+      ];
+    }
+  }
+
   async getLeaderboard() {
     try {
       if (!this.sdk) await this.initialize();
@@ -260,6 +292,30 @@ export class GainsSDKClient {
       console.error('Failed to fetch leaderboard:', error);
       return [];
     }
+  }
+
+  async switchChain(chainName: keyof typeof CHAIN_CONFIGS) {
+    try {
+      this.currentChain = chainName;
+      this.sdk = null; // Force re-initialization
+      this.cachedMarkets = []; // Clear cache
+      this.lastFetchTime = 0;
+      
+      await this.initialize(chainName);
+      console.log(`Successfully switched to ${chainName}`);
+      return true;
+    } catch (error) {
+      console.error(`Failed to switch to ${chainName}:`, error);
+      return false;
+    }
+  }
+
+  getCurrentChain() {
+    return this.currentChain;
+  }
+
+  getSupportedChains() {
+    return Object.keys(CHAIN_CONFIGS) as (keyof typeof CHAIN_CONFIGS)[];
   }
 
   private getCategoryFromMarket(market: any): string {

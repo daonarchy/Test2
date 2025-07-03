@@ -82,8 +82,8 @@ export default function LeaderboardTab() {
                       #{trader.rank}
                     </div>
                     <div>
-                      <div className="text-white font-medium">{trader.username}</div>
-                      <div className="text-xs text-gray-400">Win Rate: {trader.winRate}%</div>
+                      <div className="text-white font-medium">{trader.trader || 'Anonymous'}</div>
+                      <div className="text-xs text-gray-400">Win Rate: {trader.winRate || '0%'}</div>
                     </div>
                   </div>
                   <div className="text-right">
