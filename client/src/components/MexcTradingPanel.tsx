@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { gainsSDK } from "@/lib/gainsSDK";
 import { useWallet } from "@/hooks/useWallet";
 import { formatPrice, calculateLiquidationPrice, calculateMarginRequired, calculatePositionSize } from "@/lib/utils";
+import { getDefaultCollateral, type CollateralToken } from "@/lib/collaterals";
+import CollateralSelector from "./CollateralSelector";
 import type { TradingPair } from "@shared/schema";
 
 interface MexcTradingPanelProps {
@@ -18,6 +20,9 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const [positionSize, setPositionSize] = useState("");
   const [leverage, setLeverage] = useState(10);
   const [limitPrice, setLimitPrice] = useState("");
+  const [selectedCollateral, setSelectedCollateral] = useState<CollateralToken>(() => 
+    getDefaultCollateral("arbitrum") // Default to Arbitrum chain
+  );
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -42,12 +47,13 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
       try {
         const result = await gainsSDK.openPosition({
           user: address,
-          pairIndex: parseInt(asset.id),
+          pairIndex: asset.id,
           collateralAmount: positionSize,
           leverage,
           long: direction === "long",
           tp: 0,
           sl: 0,
+          collateralIndex: selectedCollateral.index,
         });
 
         if (result.success) {
@@ -173,16 +179,29 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
         </div>
       )}
 
+      {/* Collateral Selection */}
+      <div className="mb-3">
+        <div className="text-xs text-gray-400 mb-1">Collateral</div>
+        <CollateralSelector
+          selectedCollateral={selectedCollateral}
+          onCollateralChange={setSelectedCollateral}
+          chainName="arbitrum"
+        />
+      </div>
+
       {/* Amount Input */}
       <div className="mb-3">
-        <div className="text-xs text-gray-400 mb-1">Amount (USDT)</div>
+        <div className="text-xs text-gray-400 mb-1">Amount ({selectedCollateral.symbol})</div>
         <Input
           type="number"
-          placeholder="0.00"
+          placeholder={`0.00 ${selectedCollateral.symbol}`}
           value={positionSize}
           onChange={(e) => setPositionSize(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white text-sm h-10"
         />
+        <div className="text-xs text-gray-500 mt-1">
+          Min: ${selectedCollateral.minPositionUsd.toLocaleString()} position size
+        </div>
       </div>
 
       {/* Leverage */}

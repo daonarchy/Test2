@@ -32,6 +32,8 @@ export const orders = pgTable("orders", {
   direction: text("direction").notNull(), // long, short
   size: decimal("size", { precision: 18, scale: 8 }).notNull(),
   leverage: integer("leverage").notNull(),
+  collateralToken: text("collateral_token").notNull().default("USDC"), // USDC, DAI, WETH, APE
+  collateralIndex: integer("collateral_index").notNull().default(3), // Gains Network collateral index
   entryPrice: decimal("entry_price", { precision: 18, scale: 8 }),
   limitPrice: decimal("limit_price", { precision: 18, scale: 8 }),
   takeProfit: decimal("take_profit", { precision: 18, scale: 8 }),
@@ -51,6 +53,8 @@ export const positions = pgTable("positions", {
   direction: text("direction").notNull(),
   size: decimal("size", { precision: 18, scale: 8 }).notNull(),
   leverage: integer("leverage").notNull(),
+  collateralToken: text("collateral_token").notNull().default("USDC"), // USDC, DAI, WETH, APE
+  collateralIndex: integer("collateral_index").notNull().default(3), // Gains Network collateral index
   entryPrice: decimal("entry_price", { precision: 18, scale: 8 }).notNull(),
   currentPrice: decimal("current_price", { precision: 18, scale: 8 }).notNull(),
   pnl: decimal("pnl", { precision: 18, scale: 8 }).notNull().default("0"),

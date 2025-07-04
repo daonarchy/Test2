@@ -3,6 +3,8 @@ export interface OrderFormData {
   direction: "long" | "short";
   size: string;
   leverage: number;
+  collateralToken: string;
+  collateralIndex: number;
   limitPrice?: string;
   takeProfit?: string;
   stopLoss?: string;
