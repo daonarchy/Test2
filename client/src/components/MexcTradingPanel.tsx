@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { gainsSDK } from "@/lib/gainsSDK";
 import { useWallet } from "@/hooks/useWallet";
+import { useChain } from "@/hooks/useChain";
 import { formatPrice, calculateLiquidationPrice, calculateMarginRequired, calculatePositionSize } from "@/lib/utils";
-import { getDefaultCollateral, type CollateralToken } from "@/lib/collaterals";
+import { getDefaultCollateral, getMinimumPositionSize, type CollateralToken } from "@/lib/collaterals";
 import CollateralSelector from "./CollateralSelector";
 import type { TradingPair } from "@shared/schema";
 
@@ -27,6 +28,16 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { address, isConnected } = useWallet();
+  const { selectedChain, switchChain, isConnectedToCorrectChain } = useChain();
+
+  // Update collateral when chain changes
+  useEffect(() => {
+    const defaultCollateral = getDefaultCollateral(selectedChain);
+    setSelectedCollateral(defaultCollateral);
+    
+    // Initialize SDK with new chain
+    gainsSDK.initialize(selectedChain as any);
+  }, [selectedChain]);
 
   const entryPrice = orderType === "limit" && limitPrice 
     ? parseFloat(limitPrice) 
@@ -185,7 +196,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
         <CollateralSelector
           selectedCollateral={selectedCollateral}
           onCollateralChange={setSelectedCollateral}
-          chainName="arbitrum"
+          chainName={selectedChain}
         />
       </div>
 
@@ -200,7 +211,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
           className="bg-gray-800 border-gray-700 text-white text-sm h-10"
         />
         <div className="text-xs text-gray-500 mt-1">
-          Min: ${selectedCollateral.minPositionUsd.toLocaleString()} position size
+          Min: ${getMinimumPositionSize(selectedCollateral, selectedChain).toLocaleString()} position size
         </div>
       </div>
 

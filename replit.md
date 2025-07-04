@@ -142,6 +142,14 @@ This is a modern trading platform application built with React, Express, and Typ
   - SDK initialization working on Arbitrum network (chain ID 42161)
   - Hybrid approach: real SDK calls with graceful fallback to demo mode
   - Real-time price data and market information from Gains Network API
+- July 4, 2025. Implemented chain-specific collateral selection:
+  - Added comprehensive collateral support (USDC, DAI, WETH, APE) per Gains Network documentation
+  - Created ChainSelector component for switching between Arbitrum, Polygon, and Base networks
+  - Implemented dynamic collateral filtering based on selected chain
+  - Added chain-specific minimum position requirements (Polygon: $1,500, Arbitrum/Base: $7,500)
+  - Integrated real-time chain detection and automatic collateral defaults
+  - Updated schema to include collateral fields in orders and positions tables
+  - Enhanced trading panel with collateral selection UI and chain-aware minimum displays
 
 ## User Preferences
 

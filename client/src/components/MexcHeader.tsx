@@ -1,5 +1,6 @@
 import { useWallet } from "@/hooks/useWallet";
 import { formatPrice, formatChange } from "@/lib/utils";
+import ChainSelector from "./ChainSelector";
 import type { TradingPair } from "@shared/schema";
 
 interface MexcHeaderProps {
@@ -18,10 +19,7 @@ export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
           <div className="text-gray-400">Futures</div>
         </div>
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1 text-xs">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-gray-400">Polygon</span>
-          </div>
+          <ChainSelector />
           <button
             onClick={connect}
             className="bg-yellow-500 text-black px-3 py-1 rounded text-xs font-medium"

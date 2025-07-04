@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { ChevronDown, Check } from "lucide-react";
-import { getSupportedCollaterals, getDefaultCollateral, type CollateralToken } from "@/lib/collaterals";
+import { getSupportedCollaterals, getMinimumPositionSize, type CollateralToken } from "@/lib/collaterals";
 
 interface CollateralSelectorProps {
   selectedCollateral: CollateralToken;
@@ -44,6 +44,9 @@ export default function CollateralSelector({
       <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-sm">
         <DialogHeader>
           <DialogTitle className="text-white">Select Collateral</DialogTitle>
+          <DialogDescription className="text-gray-400">
+            Choose your trading collateral for {chainName.charAt(0).toUpperCase() + chainName.slice(1)} network
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-2">
@@ -60,7 +63,7 @@ export default function CollateralSelector({
                   <div className="font-medium text-white">{collateral.symbol}</div>
                   <div className="text-sm text-gray-400">{collateral.name}</div>
                   <div className="text-xs text-gray-500">
-                    Min: ${collateral.minPositionUsd.toLocaleString()}
+                    Min: ${getMinimumPositionSize(collateral, chainName).toLocaleString()}
                   </div>
                 </div>
               </div>
