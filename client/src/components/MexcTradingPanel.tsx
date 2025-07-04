@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { gainsSDK } from "@/lib/gainsSDK";
 import { useWallet } from "@/hooks/useWallet";
-import { useCollaterals } from "@/hooks/useCollaterals";
 import { formatPrice, calculateLiquidationPrice, calculateMarginRequired, calculatePositionSize } from "@/lib/utils";
 import type { TradingPair } from "@shared/schema";
 
@@ -19,18 +18,10 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const [positionSize, setPositionSize] = useState("");
   const [leverage, setLeverage] = useState(10);
   const [limitPrice, setLimitPrice] = useState("");
-  const [selectedCollateral, setSelectedCollateral] = useState("USDC");
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { address, isConnected, currentChain } = useWallet();
-  const { data: collaterals, isLoading: isLoadingCollaterals } = useCollaterals();
-  
-  // Get available collaterals from SDK based on current chain
-  const availableCollaterals = collaterals || [
-    { index: 3, symbol: 'USDC', name: 'USD Coin' },
-    { index: 7, symbol: 'BtcUSD', name: 'Bitcoin USD' }
-  ];
+  const { address, isConnected } = useWallet();
 
   const entryPrice = orderType === "limit" && limitPrice 
     ? parseFloat(limitPrice) 
@@ -49,15 +40,10 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
 
       // Try using Gains Network SDK for real trading
       try {
-        // Find selected collateral index
-        const selectedCollateralData = availableCollaterals.find(c => c.symbol === selectedCollateral);
-        const collateralIndex = selectedCollateralData?.index || 3; // Default to USDC
-
         const result = await gainsSDK.openPosition({
           user: address,
-          pairIndex: asset.pairIndex || parseInt(asset.id.toString()),
+          pairIndex: parseInt(asset.id),
           collateralAmount: positionSize,
-          collateralIndex,
           leverage,
           long: direction === "long",
           tp: 0,
@@ -82,7 +68,7 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
     onSuccess: async (result) => {
       toast({
         title: "Position Opened",
-        description: `${direction.toUpperCase()} ${asset.symbol} - ${result.success ? 'Transaction Built' : 'Demo Mode'}`,
+        description: `${direction.toUpperCase()} ${asset.symbol} - ${result.transactionHash ? 'TX: ' + result.transactionHash.slice(0, 8) + '...' : 'Demo Mode'}`,
       });
       
       queryClient.invalidateQueries({ queryKey: ["gains-positions", address] });
@@ -187,26 +173,9 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
         </div>
       )}
 
-      {/* Collateral Selector */}
-      <div className="mb-3">
-        <div className="text-xs text-gray-400 mb-1">Collateral</div>
-        <select
-          value={selectedCollateral}
-          onChange={(e) => setSelectedCollateral(e.target.value)}
-          className="w-full bg-gray-800 border border-gray-700 text-white text-sm h-10 rounded px-3"
-          disabled={isLoadingCollaterals}
-        >
-          {availableCollaterals.map((collateral: any) => (
-            <option key={collateral.symbol} value={collateral.symbol}>
-              {collateral.symbol} - {collateral.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Amount Input */}
       <div className="mb-3">
-        <div className="text-xs text-gray-400 mb-1">Amount ({selectedCollateral})</div>
+        <div className="text-xs text-gray-400 mb-1">Amount (USDT)</div>
         <Input
           type="number"
           placeholder="0.00"

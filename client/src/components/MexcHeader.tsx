@@ -1,7 +1,5 @@
 import { useWallet } from "@/hooks/useWallet";
-import { useFarcasterWallet } from "@/hooks/useFarcasterWallet";
 import { formatPrice, formatChange } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import type { TradingPair } from "@shared/schema";
 
 interface MexcHeaderProps {
@@ -9,30 +7,7 @@ interface MexcHeaderProps {
 }
 
 export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
-  const { 
-    isConnected: isWagmiConnected, 
-    address: wagmiAddress, 
-    connect, 
-    disconnect,
-    currentChain,
-    switchChain,
-    isSwitchingChain,
-    getChainInfo
-  } = useWallet();
-  const { isInFarcaster, user, address: farcasterAddress } = useFarcasterWallet();
-
-  const handleConnect = async () => {
-    try {
-      await connect();
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    }
-  };
-
-  const isConnectedViaFarcaster = isInFarcaster && user && farcasterAddress;
-  const isConnectedViaWagmi = !isInFarcaster && isWagmiConnected && wagmiAddress;
-  const isConnected = isConnectedViaFarcaster || isConnectedViaWagmi;
-  const address = farcasterAddress || wagmiAddress;
+  const { isConnected, address, connect } = useWallet();
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-gray-900 border-b border-gray-700 z-50">
@@ -43,53 +18,19 @@ export default function MexcHeader({ selectedAsset }: MexcHeaderProps) {
           <div className="text-gray-400">Futures</div>
         </div>
         <div className="flex items-center space-x-3">
-          {/* Chain Selector */}
-          <div className="flex items-center space-x-1">
-            <select
-              value={currentChain}
-              onChange={(e) => switchChain(e.target.value as 'polygon' | 'arbitrum' | 'base')}
-              disabled={isSwitchingChain}
-              className="bg-gray-800 border border-gray-600 text-white text-xs px-2 py-1 rounded focus:outline-none focus:border-yellow-500"
-            >
-              <option value="arbitrum">Arbitrum</option>
-              <option value="polygon">Polygon</option>
-              <option value="base">Base</option>
-            </select>
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+          <div className="flex items-center space-x-1 text-xs">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-gray-400">Polygon</span>
           </div>
-          
-          {isConnectedViaFarcaster ? (
-            <div className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
-              @{user?.username}
-            </div>
-          ) : isConnectedViaWagmi ? (
-            <div className="flex items-center space-x-2">
-              <div className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
-                {`${wagmiAddress?.slice(0, 4)}...${wagmiAddress?.slice(-4)}`}
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={disconnect}
-                className="text-xs text-gray-400 hover:text-white px-2 py-1 h-auto"
-              >
-                ×
-              </Button>
-            </div>
-          ) : !isInFarcaster ? (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleConnect}
-              className="text-xs px-3 py-1 h-auto bg-blue-600 text-white border-blue-600 hover:bg-blue-700"
-            >
-              Connect Wallet
-            </Button>
-          ) : (
-            <div className="bg-yellow-600 text-black px-3 py-1 rounded text-xs">
-              No Wallet
-            </div>
-          )}
+          <button
+            onClick={connect}
+            className="bg-yellow-500 text-black px-3 py-1 rounded text-xs font-medium"
+          >
+            {isConnected 
+              ? `${address?.slice(0, 4)}...${address?.slice(-4)}`
+              : "Connect"
+            }
+          </button>
         </div>
       </div>
 

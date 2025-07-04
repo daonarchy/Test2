@@ -5,23 +5,16 @@ import { insertOrderSchema, insertTradingPairSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Trading pairs endpoints - menggunakan data real dari Gains Network SDK
+  // Trading pairs endpoints
   app.get("/api/trading-pairs", async (req, res) => {
     try {
       const { category } = req.query;
-      
-      // Import and use real Gains SDK
-      const { gainsSDK } = await import('../client/src/lib/gainsSDK.js');
-      
-      // Fetch real trading pairs from SDK
-      console.log('Fetching trading pairs from Gains Network SDK...');
-      const allPairs = await gainsSDK.getMarkets();
-      
       let pairs;
+      
       if (category && typeof category === "string") {
-        pairs = allPairs.filter(pair => pair.category === category);
+        pairs = await storage.getTradingPairsByCategory(category);
       } else {
-        pairs = allPairs;
+        pairs = await storage.getAllTradingPairs();
       }
       
       res.json(pairs);

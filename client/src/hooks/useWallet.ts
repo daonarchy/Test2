@@ -1,110 +1,54 @@
-import { useState, useEffect } from 'react';
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
-import { metaMask, walletConnect } from 'wagmi/connectors';
-import { useFarcasterWallet } from './useFarcasterWallet';
-import { gainsSDK } from '@/lib/gainsSDK';
+import { injected } from 'wagmi/connectors';
 
 export function useWallet() {
-  const farcasterWallet = useFarcasterWallet();
-  const { address: wagmiAddress, isConnected: isWagmiConnected, chainId } = useAccount();
-  const { connect: wagmiConnect, isPending } = useConnect();
-  const { disconnect: wagmiDisconnect } = useDisconnect();
-  const { switchChain: wagmiSwitchChain, isPending: isSwitchingChain } = useSwitchChain();
-  
-  const [currentChain, setCurrentChain] = useState<'polygon' | 'arbitrum' | 'base'>('arbitrum');
+  const { address, isConnected, chainId } = useAccount();
+  const { connect, isPending: isConnecting } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { switchChain } = useSwitchChain();
 
-  useEffect(() => {
-    // Load saved chain from localStorage
-    const savedChain = localStorage.getItem('wallet_chain') as 'polygon' | 'arbitrum' | 'base';
-    if (savedChain && ['polygon', 'arbitrum', 'base'].includes(savedChain)) {
-      setCurrentChain(savedChain);
-    }
-  }, []);
-
-  const connect = async () => {
+  const connectWallet = async () => {
     try {
-      // Try MetaMask first, then WalletConnect as fallback
-      wagmiConnect({ connector: metaMask() });
+      connect({ connector: injected() });
+      return { success: true, address };
     } catch (error) {
-      console.error('Failed to connect:', error);
-      // Fallback to WalletConnect
-      try {
-        wagmiConnect({ 
-          connector: walletConnect({
-            projectId: '12345', // Replace with actual project ID when available
-            showQrModal: true,
-          })
-        });
-      } catch (wcError) {
-        console.error('WalletConnect failed:', wcError);
-      }
+      console.error('Failed to connect wallet:', error);
+      return { success: false, error };
     }
   };
 
-  const disconnect = () => {
-    wagmiDisconnect();
+  const disconnectWallet = () => {
+    disconnect();
   };
 
-  const switchChain = async (chainName: 'polygon' | 'arbitrum' | 'base') => {
+  const switchToChain = async (newChainId: number) => {
     try {
-      console.log(`Switching to ${chainName}...`);
-      
-      // Chain IDs mapping
-      const chainIds = {
-        polygon: 137,
-        arbitrum: 42161,
-        base: 8453
-      };
-      
-      // Switch wagmi chain if connected
-      if (isWagmiConnected) {
-        wagmiSwitchChain({ chainId: chainIds[chainName] });
-      }
-      
-      // Switch SDK to the new chain
-      const success = await gainsSDK.switchChain(chainName);
-      
-      if (success) {
-        setCurrentChain(chainName);
-        localStorage.setItem('wallet_chain', chainName);
-        console.log(`Successfully switched to ${chainName}`);
-        return true;
-      } else {
-        throw new Error(`Failed to switch to ${chainName}`);
-      }
+      switchChain({ chainId: newChainId });
+      return { success: true };
     } catch (error) {
       console.error('Failed to switch chain:', error);
-      return false;
+      return { success: false, error };
     }
   };
 
-  const getSupportedChains = () => {
-    return gainsSDK.getSupportedChains();
-  };
-
-  const getChainInfo = (chainName: string) => {
-    const chainData = {
-      polygon: { name: 'Polygon', symbol: 'MATIC', color: 'purple', id: 137 },
-      arbitrum: { name: 'Arbitrum', symbol: 'ETH', color: 'blue', id: 42161 },
-      base: { name: 'Base', symbol: 'ETH', color: 'blue', id: 8453 }
+  const getChainName = (chainId?: number) => {
+    const chains: Record<number, string> = {
+      1: "Ethereum",
+      137: "Polygon",
+      42161: "Arbitrum",
+      8453: "Base",
     };
-    return chainData[chainName as keyof typeof chainData];
+    return chainId ? chains[chainId] || "Unknown" : "Unknown";
   };
 
-  // Return combined state prioritizing Farcaster when available
   return {
-    isInFarcaster: farcasterWallet.isInFarcaster,
-    user: farcasterWallet.user,
-    address: farcasterWallet.address || wagmiAddress,
-    isConnected: farcasterWallet.isInFarcaster ? !!farcasterWallet.address : isWagmiConnected,
-    isLoading: isPending,
-    currentChain,
+    isConnected,
+    address,
     chainId,
-    connect,
-    disconnect,
-    switchChain,
-    isSwitchingChain,
-    getSupportedChains,
-    getChainInfo,
+    chainName: getChainName(chainId),
+    connect: connectWallet,
+    disconnect: disconnectWallet,
+    switchChain: switchToChain,
+    isConnecting,
   };
 }
