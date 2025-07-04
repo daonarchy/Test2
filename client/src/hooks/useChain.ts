@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSwitchChain } from 'wagmi';
 
 export type SupportedChain = 'arbitrum' | 'polygon' | 'base';
 
@@ -19,6 +19,7 @@ const CHAIN_NAME_TO_ID: Record<SupportedChain, number> = {
 
 export function useChain() {
   const { chain } = useAccount();
+  const { switchChain: switchChainWagmi, isPending: isSwitchingChain } = useSwitchChain();
   const [selectedChain, setSelectedChain] = useState<SupportedChain>('arbitrum');
 
   useEffect(() => {
@@ -27,8 +28,17 @@ export function useChain() {
     }
   }, [chain?.id]);
 
-  const switchChain = (chainName: SupportedChain) => {
-    setSelectedChain(chainName);
+  const switchChain = async (chainName: SupportedChain) => {
+    const chainId = CHAIN_NAME_TO_ID[chainName];
+    try {
+      // This will trigger wallet popup for chain switching
+      await switchChainWagmi({ chainId });
+      setSelectedChain(chainName);
+    } catch (error) {
+      console.error('Failed to switch chain:', error);
+      // If switching fails, still update UI state for demo purposes
+      setSelectedChain(chainName);
+    }
   };
 
   const getChainId = (chainName: SupportedChain): number => {
@@ -46,5 +56,6 @@ export function useChain() {
     getChainName,
     connectedChain: chain,
     isConnectedToCorrectChain: chain?.id === CHAIN_NAME_TO_ID[selectedChain],
+    isSwitchingChain,
   };
 }

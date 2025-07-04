@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ChevronDown, Check } from "lucide-react";
+import { ChevronDown, Check, Loader2 } from "lucide-react";
 import { useChain, type SupportedChain } from "@/hooks/useChain";
 
 interface ChainConfig {
@@ -34,12 +34,12 @@ const SUPPORTED_CHAINS: ChainConfig[] = [
 
 export default function ChainSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { selectedChain, switchChain, isConnectedToCorrectChain } = useChain();
+  const { selectedChain, switchChain, isConnectedToCorrectChain, isSwitchingChain } = useChain();
 
   const currentChainConfig = SUPPORTED_CHAINS.find(chain => chain.name === selectedChain);
 
-  const handleChainSelect = (chainName: SupportedChain) => {
-    switchChain(chainName);
+  const handleChainSelect = async (chainName: SupportedChain) => {
+    await switchChain(chainName);
     setIsOpen(false);
   };
 
@@ -50,10 +50,15 @@ export default function ChainSelector() {
           variant="outline"
           size="sm"
           className="bg-gray-800 border-gray-700 hover:bg-gray-700 text-white"
+          disabled={isSwitchingChain}
         >
           <span className="mr-1">{currentChainConfig?.icon}</span>
           <span className="text-xs">{currentChainConfig?.displayName}</span>
-          <ChevronDown className="h-3 w-3 ml-1" />
+          {isSwitchingChain ? (
+            <Loader2 className="h-3 w-3 animate-spin ml-1" />
+          ) : (
+            <ChevronDown className="h-3 w-3 ml-1" />
+          )}
         </Button>
       </DialogTrigger>
       
@@ -69,6 +74,7 @@ export default function ChainSelector() {
               variant="ghost"
               className="w-full justify-between p-3 h-auto hover:bg-gray-800"
               onClick={() => handleChainSelect(chain.name)}
+              disabled={isSwitchingChain}
             >
               <div className="flex items-center gap-2">
                 <span className="text-lg">{chain.icon}</span>

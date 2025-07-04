@@ -16,6 +16,13 @@ interface MexcTradingPanelProps {
 }
 
 export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
+  // All hooks at the top level
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { address, isConnected } = useWallet();
+  const { selectedChain, switchChain, isConnectedToCorrectChain } = useChain();
+  
+  // State hooks after context hooks
   const [orderType, setOrderType] = useState<"market" | "limit">("market");
   const [direction, setDirection] = useState<"long" | "short">("long");
   const [positionSize, setPositionSize] = useState("");
@@ -24,11 +31,6 @@ export default function MexcTradingPanel({ asset }: MexcTradingPanelProps) {
   const [selectedCollateral, setSelectedCollateral] = useState<CollateralToken>(() => 
     getDefaultCollateral("arbitrum") // Default to Arbitrum chain
   );
-
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const { address, isConnected } = useWallet();
-  const { selectedChain, switchChain, isConnectedToCorrectChain } = useChain();
 
   // Update collateral when chain changes
   useEffect(() => {
