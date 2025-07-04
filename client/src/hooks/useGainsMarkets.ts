@@ -11,8 +11,8 @@ export function useGainsMarkets(category?: string) {
       }
       return markets;
     },
-    staleTime: 30000, // 30 seconds
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 300000, // 5 minutes
+    refetchInterval: false, // Disable automatic refetching
   });
 }
 
@@ -20,8 +20,8 @@ export function useGainsMarketPrice(pairIndex: number) {
   return useQuery({
     queryKey: ['gains-market-price', pairIndex],
     queryFn: () => gainsSDK.getMarketPrice(pairIndex),
-    staleTime: 5000, // 5 seconds
-    refetchInterval: 5000, // Refetch every 5 seconds
+    staleTime: 60000, // 1 minute
+    refetchInterval: false, // Disable automatic refetching
     enabled: pairIndex >= 0,
   });
 }

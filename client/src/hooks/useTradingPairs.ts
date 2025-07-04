@@ -19,7 +19,8 @@ export function useTradingPairs(category?: string) {
       
       return response.json();
     },
-    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
+    staleTime: 300000, // 5 minutes
+    refetchInterval: false, // Disable automatic refetching to reduce lag
   });
 }
 
